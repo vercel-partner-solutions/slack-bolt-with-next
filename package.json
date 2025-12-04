@@ -11,24 +11,24 @@
 		"format": "biome format --write"
 	},
 	"dependencies": {
-		"@slack/bolt": "^4.4.0",
-		"@vercel/slack-bolt": "^1.0.1",
-		"express": "^5.1.0",
-		"next": "15.5.2",
+		"@slack/bolt": "^4.6.0",
+		"@vercel/slack-bolt": "^1.0.2",
+		"express": "^5.2.1",
+		"next": "16.0.7",
 		"react": "19.1.1",
 		"react-dom": "19.1.1"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.2",
-		"@ngrok/ngrok": "^1.5.2",
+		"@ngrok/ngrok": "^1.6.0",
 		"@slack/cli-hooks": "^1.2.1",
-		"@tailwindcss/postcss": "^4.1.12",
-		"@types/node": "^24.3.0",
-		"@types/react": "^19.1.12",
-		"@types/react-dom": "^19.1.8",
-		"dotenv": "^17.2.1",
-		"tailwindcss": "^4.1.12",
-		"tsx": "^4.20.5",
-		"typescript": "^5.9.2"
+		"@tailwindcss/postcss": "^4.1.17",
+		"@types/node": "^24.10.1",
+		"@types/react": "^19.2.7",
+		"@types/react-dom": "^19.2.3",
+		"dotenv": "^17.2.3",
+		"tailwindcss": "^4.1.17",
+		"tsx": "^4.21.0",
+		"typescript": "^5.9.3"
 	}
 }
