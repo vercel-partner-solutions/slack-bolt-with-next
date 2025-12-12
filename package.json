@@ -1,34 +1,34 @@
 {
-	"name": "slack-bolt-with-next",
-	"version": "0.1.0",
-	"private": true,
-	"scripts": {
-		"dev": "next dev --turbopack",
-		"dev:tunnel": "tsx scripts/dev.tunnel.ts",
-		"build": "next build --turbopack",
-		"start": "next start",
-		"lint": "biome check",
-		"format": "biome format --write"
-	},
-	"dependencies": {
-		"@slack/bolt": "^4.6.0",
-		"@vercel/slack-bolt": "^1.0.2",
-		"express": "^5.2.1",
-		"next": "16.0.7",
-		"react": "19.1.1",
-		"react-dom": "19.1.1"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "2.2.2",
-		"@ngrok/ngrok": "^1.6.0",
-		"@slack/cli-hooks": "^1.2.1",
-		"@tailwindcss/postcss": "^4.1.17",
-		"@types/node": "^24.10.1",
-		"@types/react": "^19.2.7",
-		"@types/react-dom": "^19.2.3",
-		"dotenv": "^17.2.3",
-		"tailwindcss": "^4.1.17",
-		"tsx": "^4.21.0",
-		"typescript": "^5.9.3"
-	}
+  "name": "slack-bolt-with-next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "dev:tunnel": "tsx scripts/dev.tunnel.ts",
+    "build": "next build --turbopack",
+    "start": "next start",
+    "lint": "biome check",
+    "format": "biome format --write"
+  },
+  "dependencies": {
+    "@slack/bolt": "^4.6.0",
+    "@vercel/slack-bolt": "^1.0.2",
+    "express": "^5.2.1",
+    "next": "16.0.10",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.2",
+    "@ngrok/ngrok": "^1.6.0",
+    "@slack/cli-hooks": "^1.2.1",
+    "@tailwindcss/postcss": "^4.1.17",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "dotenv": "^17.2.3",
+    "tailwindcss": "^4.1.17",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
 }
