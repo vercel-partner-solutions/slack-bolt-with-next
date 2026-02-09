@@ -773,7 +773,7 @@ packages:
     hasBin: true
 
   '@vercel/slack-bolt@file:vercel-slack-bolt-1.1.0.tgz':
-    resolution: {integrity: sha512-mm2XYAw343NyxVVYNvzxhdnQd8uZ5EfZ0wm9zd2mtTiji/zmyR9Dc2yldFnNMY2DCl+NaUflJ+n/5xjescynSw==, tarball: file:vercel-slack-bolt-1.1.0.tgz}
+    resolution: {integrity: sha512-L5dy3Kq6MDao7q/bVdGttedQs22paCG5UjqsXkHcLiQbsy4fTnA0N2R5CHwrtGoSSmsUwE6yt2VgLE4PtxGpBA==, tarball: file:vercel-slack-bolt-1.1.0.tgz}
     version: 1.1.0
     engines: {node: '>=20.0.0'}
     hasBin: true
