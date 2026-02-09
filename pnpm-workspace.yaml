@@ -2,3 +2,6 @@ onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - esbuild
   - sharp
+
+overrides:
+  qs@<6.14.1: '>=6.14.1'

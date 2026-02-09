@@ -5,16 +5,16 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "dev:tunnel": "tsx scripts/dev.tunnel.ts",
-    "build": "next build --turbopack",
+    "build": "vercel-slack build && next build --turbopack",
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write"
   },
   "dependencies": {
     "@slack/bolt": "^4.6.0",
-    "@vercel/slack-bolt": "^1.0.2",
+    "@vercel/slack-bolt": "file:vercel-slack-bolt-1.1.0.tgz",
     "express": "^5.2.1",
-    "next": "16.0.10",
+    "next": "16.1.6",
     "react": "19.1.1",
     "react-dom": "19.1.1"
   },
