@@ -15,8 +15,8 @@ importers:
         specifier: ^4.6.0
         version: 4.6.0(@types/express@5.0.6)
       '@vercel/slack-bolt':
-        specifier: file:vercel-slack-bolt-1.1.0.tgz
-        version: file:vercel-slack-bolt-1.1.0.tgz(@slack/bolt@4.6.0(@types/express@5.0.6))
+        specifier: 1.2.0-canary.20260210195022.2e22609
+        version: 1.2.0-canary.20260210195022.2e22609(@slack/bolt@4.6.0(@types/express@5.0.6))
       express:
         specifier: ^5.2.1
         version: 5.2.1
@@ -772,9 +772,8 @@ packages:
     resolution: {integrity: sha512-K4rmtUT6t1vX06tiY44ot8A7W1FKN7g/tMkE7yZghCgNQ8b30SzljBd4ni8RNp2pJzM/HrZmphRDeIArO7oZuw==}
     hasBin: true
 
-  '@vercel/slack-bolt@file:vercel-slack-bolt-1.1.0.tgz':
-    resolution: {integrity: sha512-L5dy3Kq6MDao7q/bVdGttedQs22paCG5UjqsXkHcLiQbsy4fTnA0N2R5CHwrtGoSSmsUwE6yt2VgLE4PtxGpBA==, tarball: file:vercel-slack-bolt-1.1.0.tgz}
-    version: 1.1.0
+  '@vercel/slack-bolt@1.2.0-canary.20260210195022.2e22609':
+    resolution: {integrity: sha512-w67vpzxbgiU6nFs2J569o5oZS4iFBAZY6Tz+L1wp8xKPWRb064BnOuolS/iBnqQ8PE40EBf4KuulveFXBVH1eg==}
     engines: {node: '>=20.0.0'}
     hasBin: true
     peerDependencies:
@@ -2051,7 +2050,7 @@ snapshots:
       - '@cfworker/json-schema'
       - supports-color
 
-  '@vercel/slack-bolt@file:vercel-slack-bolt-1.1.0.tgz(@slack/bolt@4.6.0(@types/express@5.0.6))':
+  '@vercel/slack-bolt@1.2.0-canary.20260210195022.2e22609(@slack/bolt@4.6.0(@types/express@5.0.6))':
     dependencies:
       '@slack/bolt': 4.6.0(@types/express@5.0.6)
       '@slack/logger': 4.0.0

@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@slack/bolt": "^4.6.0",
-    "@vercel/slack-bolt": "file:vercel-slack-bolt-1.1.0.tgz",
+    "@vercel/slack-bolt": "1.2.0-canary.20260210195022.2e22609",
     "express": "^5.2.1",
     "next": "16.1.6",
     "react": "19.1.1",
