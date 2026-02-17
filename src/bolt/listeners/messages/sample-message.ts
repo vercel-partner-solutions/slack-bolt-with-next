@@ -5,7 +5,7 @@ export const sampleMessageCallback = async ({
   logger,
 }: AllMiddlewareArgs & SlackEventMiddlewareArgs<"message">) => {
   try {
-    await say(`world!`);
+    await say(`slack!`);
   } catch (error) {
     logger.error(error);
   }
