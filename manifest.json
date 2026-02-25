@@ -4,16 +4,19 @@
     "minor_version": 1
   },
   "display_information": {
-    "name": "m0"
+    "name": "OpenBot"
   },
   "features": {
+    "assistant_view": {
+      "assistant_description": "An AI assistant powered by the Slack MCP and AI SDK by Vercel."
+    },
     "app_home": {
       "home_tab_enabled": true,
       "messages_tab_enabled": false,
       "messages_tab_read_only_enabled": true
     },
     "bot_user": {
-      "display_name": "m0",
+      "display_name": "OpenBot",
       "always_online": true
     },
     "shortcuts": [
@@ -33,17 +36,36 @@
       }
     ]
   },
-  "oauth_config": {
-    "scopes": {
-      "bot": [
-        "assistant:write",
-        "channels:history",
-        "chat:write",
-        "commands",
-        "im:history"
-      ]
-    }
-  },
+ "oauth_config": {
+  "scopes": {
+    "user": [
+      "canvases:read",
+      "canvases:write",
+      "channels:history",
+      "chat:write",
+      "groups:history",
+      "im:history",
+      "mpim:history",
+      "search:read.files",
+      "search:read.im",
+      "search:read.mpim",
+      "search:read.private",
+      "search:read.public",
+      "search:read.users",
+      "users:read",
+      "users:read.email"
+    ],
+    "bot": [
+      "assistant:write",
+      "channels:history",
+      "chat:write",
+      "commands",
+      "groups:history",
+      "im:history",
+      "mpim:history"
+    ]
+  }
+},
   "settings": {
     "event_subscriptions": {
       "request_url": "https://<your-domain>/api/slack/events",

@@ -43,3 +43,4 @@ yarn-error.log*
 next-env.d.ts
 .slack/config.json
 .slack/apps.json
+.env*.local
