@@ -170,10 +170,10 @@ export const assistant = new Assistant({
           event_payload: { error: String(e) },
         },
       });
-    } finally {
       await streamer
         ?.stop({})
         .catch((e) => logger.error("Failed to stop streamer:", e));
+    } finally {
       await mcpClient
         ?.close()
         .catch((e) => logger.error("Failed to close MCP client:", e));
