@@ -1,5 +1,11 @@
 import { devToolsMiddleware } from "@ai-sdk/devtools";
-import { gateway, ToolLoopAgent, type ToolSet, wrapLanguageModel } from "ai";
+import {
+  gateway,
+  stepCountIs,
+  ToolLoopAgent,
+  type ToolSet,
+  wrapLanguageModel,
+} from "ai";
 
 const model = wrapLanguageModel({
   model: gateway("openai/gpt-5.2-chat"),
@@ -17,4 +23,5 @@ export const createSlackAgent = (tools: ToolSet) =>
     model,
     instructions: SYSTEM_INSTRUCTIONS,
     tools,
+    stopWhen: stepCountIs(10),
   });

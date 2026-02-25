@@ -2,11 +2,20 @@ import { Assistant } from "@slack/bolt";
 import type { TaskUpdateChunk } from "@slack/web-api";
 import { convertToModelMessages, smoothStream } from "ai";
 import { createSlackAgent } from "@/lib/ai/agent";
-import { createSlackMCPClient } from "@/lib/bolt/mcp";
+import { createSlackMCPClient, type MCPClient } from "@/lib/bolt/mcp";
 import { getThreadContextAsModelMessages } from "@/lib/bolt/thread-utils";
 import { buildToolLabelMap } from "@/lib/bolt/tool-labels";
 
-type MCPClient = Awaited<ReturnType<typeof createSlackMCPClient>>;
+async function upsertTask(
+  tasksMap: Map<string, TaskUpdateChunk>,
+  streamer: { append: (args: { chunks: TaskUpdateChunk[] }) => Promise<unknown> },
+  id: string,
+  title: string,
+  status: TaskUpdateChunk["status"],
+): Promise<void> {
+  tasksMap.set(id, { type: "task_update", id, title, status });
+  await streamer.append({ chunks: [...tasksMap.values()] });
+}
 
 export const assistant = new Assistant({
   threadStarted: async ({
@@ -81,16 +90,24 @@ export const assistant = new Assistant({
     const { channel, thread_ts } = message;
     const { userId, teamId, botId } = context;
 
+    if (!userId || !teamId) {
+      logger.warn("userMessage: missing userId or teamId in context");
+      return;
+    }
+
+    const TITLE_MAX_LENGTH = 200;
+
     let mcpClient: MCPClient | undefined;
     let streamer: ReturnType<typeof client.chatStream> | undefined;
+    let streamerStopped = false;
     try {
       await setStatus("is thinking...");
       mcpClient = await createSlackMCPClient({
         userToken: process.env.SLACK_USER_TOKEN ?? "",
       });
-      await setTitle(message.text);
+      await setTitle(message.text.slice(0, TITLE_MAX_LENGTH));
 
-      const [uiMessages, tools, schema] = await Promise.all([
+      const [threadMessages, tools, schema] = await Promise.all([
         getThreadContextAsModelMessages({
           client,
           channel,
@@ -115,31 +132,25 @@ export const assistant = new Assistant({
       });
 
       const result = await agent.stream({
-        messages: await convertToModelMessages(uiMessages),
+        messages: await convertToModelMessages(threadMessages),
         experimental_transform: smoothStream({ chunking: "word" }),
       });
 
       const tasksMap = new Map<TaskUpdateChunk["id"], TaskUpdateChunk>();
 
-      const upsertTask = async (
-        id: string,
-        title: string,
-        status: TaskUpdateChunk["status"],
-      ) => {
-        tasksMap.set(id, { type: "task_update", id, title, status });
-        await streamer?.append({
-          chunks: [...tasksMap.values()],
-        });
-      };
       for await (const part of result.fullStream) {
         if (part.type === "tool-input-start") {
           await upsertTask(
+            tasksMap,
+            streamer,
             part.id,
             toolLabelMap.get(part.toolName)?.inProgress ?? part.toolName,
             "in_progress",
           );
         } else if (part.type === "tool-result") {
           await upsertTask(
+            tasksMap,
+            streamer,
             part.toolCallId,
             toolLabelMap.get(part.toolName)?.complete ??
               tasksMap.get(part.toolCallId)?.title ??
@@ -148,18 +159,21 @@ export const assistant = new Assistant({
           );
         } else if (part.type === "tool-error") {
           await upsertTask(
+            tasksMap,
+            streamer,
             part.toolCallId,
             tasksMap.get(part.toolCallId)?.title ?? part.toolName,
             "error",
           );
         } else if (part.type === "text-delta") {
-          await streamer.append({ markdown_text: part.text });
+          await streamer?.append({ markdown_text: part.text });
         }
       }
 
       await streamer.stop({
         chunks: [...tasksMap.values()],
       });
+      streamerStopped = true;
     } catch (e) {
       logger.error(e);
 
@@ -167,12 +181,14 @@ export const assistant = new Assistant({
         text: `:warning: Sorry, something went wrong!`,
         metadata: {
           event_type: "assistant_error",
-          event_payload: { error: String(e) },
+          event_payload: { error: e instanceof Error ? e.message : "Unknown error" },
         },
       });
-      await streamer
-        ?.stop({})
-        .catch((e) => logger.error("Failed to stop streamer:", e));
+      if (!streamerStopped) {
+        await streamer
+          ?.stop({})
+          .catch((e) => logger.error("Failed to stop streamer:", e));
+      }
     } finally {
       await mcpClient
         ?.close()

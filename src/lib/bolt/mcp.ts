@@ -12,3 +12,5 @@ export const createSlackMCPClient = ({ userToken }: { userToken: string }) =>
       },
     },
   });
+
+export type MCPClient = Awaited<ReturnType<typeof createSlackMCPClient>>;
