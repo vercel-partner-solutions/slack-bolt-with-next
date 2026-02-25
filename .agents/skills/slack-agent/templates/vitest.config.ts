@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
@@ -6,32 +6,27 @@ export default defineConfig({
     globals: true,
 
     // Node environment for server-side code
-    environment: 'node',
+    environment: "node",
 
     // Test file patterns
     include: [
-      'server/**/*.test.ts',
-      'server/**/*.test.tsx',
-      'server/**/*.e2e.test.ts',
+      "server/**/*.test.ts",
+      "server/**/*.test.tsx",
+      "server/**/*.e2e.test.ts",
     ],
 
     // Exclude patterns
-    exclude: [
-      'node_modules',
-      '.nitro',
-      '.output',
-      'dist',
-    ],
+    exclude: ["node_modules", ".nitro", ".output", "dist"],
 
     // Coverage configuration
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      include: ['server/**/*.ts'],
+      provider: "v8",
+      reporter: ["text", "json", "html"],
+      include: ["server/**/*.ts"],
       exclude: [
-        'server/**/*.test.ts',
-        'server/**/*.d.ts',
-        'server/**/__tests__/**',
+        "server/**/*.test.ts",
+        "server/**/*.d.ts",
+        "server/**/__tests__/**",
       ],
       // Coverage thresholds (adjust as needed)
       thresholds: {
@@ -43,7 +38,7 @@ export default defineConfig({
     },
 
     // Setup files run before each test file
-    setupFiles: ['./server/__tests__/setup.ts'],
+    setupFiles: ["./server/__tests__/setup.ts"],
 
     // Timeout for async operations (ms)
     testTimeout: 10000,
@@ -52,6 +47,6 @@ export default defineConfig({
     retry: 0,
 
     // Reporter configuration
-    reporters: ['verbose'],
+    reporters: ["verbose"],
   },
 });

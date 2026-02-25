@@ -4,14 +4,14 @@
  * Copy this template to server/lib/ai/tools.test.ts and customize
  * for your specific tool implementations.
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { WebClient } from '@slack/web-api';
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { WebClient } from "@slack/web-api";
 
 // Import your tools
 // import { getChannelMessages, getThreadMessages, joinChannel, searchChannels } from './tools';
 
 // Mock Slack Web API
-vi.mock('@slack/web-api', () => ({
+vi.mock("@slack/web-api", () => ({
   WebClient: vi.fn().mockImplementation(() => ({
     conversations: {
       history: vi.fn(),
@@ -22,7 +22,7 @@ vi.mock('@slack/web-api', () => ({
   })),
 }));
 
-describe('Slack Tools', () => {
+describe("Slack Tools", () => {
   let mockClient: ReturnType<typeof WebClient>;
 
   beforeEach(() => {
@@ -30,14 +30,14 @@ describe('Slack Tools', () => {
     mockClient = new WebClient();
   });
 
-  describe('getChannelMessages', () => {
-    it('should fetch messages from a channel', async () => {
+  describe("getChannelMessages", () => {
+    it("should fetch messages from a channel", async () => {
       // Setup mock response
       vi.mocked(mockClient.conversations.history).mockResolvedValue({
         ok: true,
         messages: [
-          { text: 'Hello', user: 'U123', ts: '123.001' },
-          { text: 'World', user: 'U456', ts: '123.002' },
+          { text: "Hello", user: "U123", ts: "123.001" },
+          { text: "World", user: "U456", ts: "123.002" },
         ],
         has_more: false,
       });
@@ -55,19 +55,19 @@ describe('Slack Tools', () => {
       expect(mockClient.conversations.history).toBeDefined();
     });
 
-    it('should handle pagination', async () => {
+    it("should handle pagination", async () => {
       vi.mocked(mockClient.conversations.history).mockResolvedValue({
         ok: true,
-        messages: [{ text: 'Message', user: 'U123', ts: '123.001' }],
+        messages: [{ text: "Message", user: "U123", ts: "123.001" }],
         has_more: true,
-        response_metadata: { next_cursor: 'cursor123' },
+        response_metadata: { next_cursor: "cursor123" },
       });
 
       // TODO: Test pagination handling
       expect(true).toBe(true); // Placeholder
     });
 
-    it('should handle empty channel', async () => {
+    it("should handle empty channel", async () => {
       vi.mocked(mockClient.conversations.history).mockResolvedValue({
         ok: true,
         messages: [],
@@ -85,9 +85,9 @@ describe('Slack Tools', () => {
       expect(true).toBe(true); // Placeholder
     });
 
-    it('should handle channel_not_found error', async () => {
+    it("should handle channel_not_found error", async () => {
       vi.mocked(mockClient.conversations.history).mockRejectedValue(
-        new Error('channel_not_found')
+        new Error("channel_not_found"),
       );
 
       // TODO: Test error handling
@@ -101,9 +101,9 @@ describe('Slack Tools', () => {
       expect(true).toBe(true); // Placeholder
     });
 
-    it('should handle not_in_channel error', async () => {
+    it("should handle not_in_channel error", async () => {
       vi.mocked(mockClient.conversations.history).mockRejectedValue(
-        new Error('not_in_channel')
+        new Error("not_in_channel"),
       );
 
       // TODO: Test permission error
@@ -111,14 +111,24 @@ describe('Slack Tools', () => {
     });
   });
 
-  describe('getThreadMessages', () => {
-    it('should fetch thread replies', async () => {
+  describe("getThreadMessages", () => {
+    it("should fetch thread replies", async () => {
       vi.mocked(mockClient.conversations.replies).mockResolvedValue({
         ok: true,
         messages: [
-          { text: 'Parent', user: 'U123', ts: '100.001' },
-          { text: 'Reply 1', user: 'U456', ts: '100.002', thread_ts: '100.001' },
-          { text: 'Reply 2', user: 'U789', ts: '100.003', thread_ts: '100.001' },
+          { text: "Parent", user: "U123", ts: "100.001" },
+          {
+            text: "Reply 1",
+            user: "U456",
+            ts: "100.002",
+            thread_ts: "100.001",
+          },
+          {
+            text: "Reply 2",
+            user: "U789",
+            ts: "100.003",
+            thread_ts: "100.001",
+          },
         ],
         has_more: false,
       });
@@ -135,9 +145,9 @@ describe('Slack Tools', () => {
       expect(true).toBe(true); // Placeholder
     });
 
-    it('should handle thread not found', async () => {
+    it("should handle thread not found", async () => {
       vi.mocked(mockClient.conversations.replies).mockRejectedValue(
-        new Error('thread_not_found')
+        new Error("thread_not_found"),
       );
 
       // TODO: Test error case
@@ -145,11 +155,11 @@ describe('Slack Tools', () => {
     });
   });
 
-  describe('joinChannel', () => {
-    it('should join a public channel', async () => {
+  describe("joinChannel", () => {
+    it("should join a public channel", async () => {
       vi.mocked(mockClient.conversations.join).mockResolvedValue({
         ok: true,
-        channel: { id: 'C12345678', name: 'general' },
+        channel: { id: "C12345678", name: "general" },
       });
 
       // TODO: Test channel joining
@@ -162,20 +172,20 @@ describe('Slack Tools', () => {
       expect(true).toBe(true); // Placeholder
     });
 
-    it('should handle already in channel', async () => {
+    it("should handle already in channel", async () => {
       vi.mocked(mockClient.conversations.join).mockResolvedValue({
         ok: true,
         already_in_channel: true,
-        channel: { id: 'C12345678' },
+        channel: { id: "C12345678" },
       });
 
       // TODO: Test already joined case
       expect(true).toBe(true); // Placeholder
     });
 
-    it('should handle private channel error', async () => {
+    it("should handle private channel error", async () => {
       vi.mocked(mockClient.conversations.join).mockRejectedValue(
-        new Error('channel_not_found')
+        new Error("channel_not_found"),
       );
 
       // TODO: Test private channel error
@@ -183,14 +193,14 @@ describe('Slack Tools', () => {
     });
   });
 
-  describe('searchChannels', () => {
-    it('should search and filter channels', async () => {
+  describe("searchChannels", () => {
+    it("should search and filter channels", async () => {
       vi.mocked(mockClient.conversations.list).mockResolvedValue({
         ok: true,
         channels: [
-          { id: 'C1', name: 'engineering', is_member: true },
-          { id: 'C2', name: 'engineering-frontend', is_member: false },
-          { id: 'C3', name: 'random', is_member: true },
+          { id: "C1", name: "engineering", is_member: true },
+          { id: "C2", name: "engineering-frontend", is_member: false },
+          { id: "C3", name: "random", is_member: true },
         ],
       });
 
@@ -205,7 +215,7 @@ describe('Slack Tools', () => {
       expect(true).toBe(true); // Placeholder
     });
 
-    it('should handle no results', async () => {
+    it("should handle no results", async () => {
       vi.mocked(mockClient.conversations.list).mockResolvedValue({
         ok: true,
         channels: [],
@@ -217,11 +227,11 @@ describe('Slack Tools', () => {
   });
 });
 
-describe('Tool Input Validation', () => {
-  it('should validate channel_id format', () => {
+describe("Tool Input Validation", () => {
+  it("should validate channel_id format", () => {
     // Channel IDs should start with C, G, or D
-    const validIds = ['C12345678', 'G12345678', 'D12345678'];
-    const invalidIds = ['12345678', 'X12345678', ''];
+    const validIds = ["C12345678", "G12345678", "D12345678"];
+    const invalidIds = ["12345678", "X12345678", ""];
 
     validIds.forEach((id) => {
       expect(/^[CGD][A-Z0-9]+$/.test(id)).toBe(true);
@@ -232,10 +242,10 @@ describe('Tool Input Validation', () => {
     });
   });
 
-  it('should validate thread_ts format', () => {
+  it("should validate thread_ts format", () => {
     // Thread timestamps are in format: seconds.microseconds
-    const validTs = ['1234567890.123456', '1000000000.000001'];
-    const invalidTs = ['invalid', '1234567890', ''];
+    const validTs = ["1234567890.123456", "1000000000.000001"];
+    const invalidTs = ["invalid", "1234567890", ""];
 
     validTs.forEach((ts) => {
       expect(/^\d+\.\d+$/.test(ts)).toBe(true);
