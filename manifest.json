@@ -35,13 +35,25 @@
   },
   "oauth_config": {
     "scopes": {
-      "bot": ["channels:history", "chat:write", "commands"]
+      "bot": [
+        "assistant:write",
+        "channels:history",
+        "chat:write",
+        "commands",
+        "im:history"
+      ]
     }
   },
   "settings": {
     "event_subscriptions": {
       "request_url": "https://<your-domain>/api/slack/events",
-      "bot_events": ["app_home_opened", "message.channels"]
+      "bot_events": [
+        "app_home_opened",
+        "assistant_thread_context_changed",
+        "assistant_thread_started",
+        "message.channels",
+        "message.im"
+      ]
     },
     "interactivity": {
       "is_enabled": true,

@@ -11,13 +11,18 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@ai-sdk/gateway": "^3.0.55",
     "@ai-sdk/mcp": "^1.0.21",
     "@slack/bolt": "^4.6.0",
+    "@slack/web-api": "^7.14.1",
+    "@upstash/redis": "^1.36.2",
     "@vercel/slack-bolt": "1.1.0",
+    "ai": "^6.0.99",
     "express": "^5.2.1",
     "next": "16.1.6",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.2",
