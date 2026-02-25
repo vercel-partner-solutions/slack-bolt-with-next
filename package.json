@@ -11,6 +11,7 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@ai-sdk/devtools": "^0.0.15",
     "@ai-sdk/gateway": "^3.0.55",
     "@ai-sdk/mcp": "^1.0.21",
     "@slack/bolt": "^4.6.0",

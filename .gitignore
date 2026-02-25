@@ -44,3 +44,4 @@ next-env.d.ts
 .slack/config.json
 .slack/apps.json
 .env*.local
+.devtools

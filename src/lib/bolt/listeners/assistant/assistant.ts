@@ -82,6 +82,7 @@ export const assistant = new Assistant({
     const { userId, teamId, botId } = context;
 
     let mcpClient: MCPClient | undefined;
+    let streamer: ReturnType<typeof client.chatStream> | undefined;
     try {
       await setStatus("is thinking...");
       mcpClient = await createSlackMCPClient({
@@ -105,16 +106,13 @@ export const assistant = new Assistant({
 
       const agent = createSlackAgent(tools);
 
-      const streamer = client.chatStream({
+      streamer = client.chatStream({
         channel,
         thread_ts,
         recipient_team_id: teamId,
         recipient_user_id: userId,
         task_display_mode: "plan",
       });
-
-      // sleep 5 seconds
-      await new Promise((resolve) => setTimeout(resolve, 5000));
 
       const result = await agent.stream({
         messages: await convertToModelMessages(uiMessages),
@@ -129,7 +127,7 @@ export const assistant = new Assistant({
         status: TaskUpdateChunk["status"],
       ) => {
         tasksMap.set(id, { type: "task_update", id, title, status });
-        await streamer.append({
+        await streamer?.append({
           chunks: [...tasksMap.values()],
         });
       };
@@ -173,6 +171,9 @@ export const assistant = new Assistant({
         },
       });
     } finally {
+      await streamer
+        ?.stop({})
+        .catch((e) => logger.error("Failed to stop streamer:", e));
       await mcpClient
         ?.close()
         .catch((e) => logger.error("Failed to close MCP client:", e));
