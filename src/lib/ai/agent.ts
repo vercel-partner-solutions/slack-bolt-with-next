@@ -1,4 +1,5 @@
 import { devToolsMiddleware } from "@ai-sdk/devtools";
+import { openai } from "@ai-sdk/openai";
 import {
   gateway,
   stepCountIs,
@@ -8,8 +9,9 @@ import {
 } from "ai";
 
 const model = wrapLanguageModel({
-  model: gateway("openai/gpt-5.2-chat"),
-  middleware: devToolsMiddleware(),
+  model: gateway("openai/gpt-5-mini"),
+  middleware:
+    process.env.NODE_ENV === "production" ? [] : [devToolsMiddleware()],
 });
 
 const SYSTEM_INSTRUCTIONS = `You are a helpful assistant in a Slack workspace.
@@ -22,6 +24,9 @@ export const createSlackAgent = (tools: ToolSet) =>
   new ToolLoopAgent({
     model,
     instructions: SYSTEM_INSTRUCTIONS,
-    tools,
+    tools: {
+      ...tools,
+      web_search: openai.tools.webSearch({ needsApproval: true }),
+    },
     stopWhen: stepCountIs(10),
   });
