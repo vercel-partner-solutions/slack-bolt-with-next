@@ -1,21 +1,11 @@
 import { Assistant } from "@slack/bolt";
-import type { TaskUpdateChunk } from "@slack/web-api";
 import { convertToModelMessages, smoothStream } from "ai";
 import { createSlackAgent } from "@/lib/ai/agent";
 import { createSlackMCPClient, type MCPClient } from "@/lib/bolt/mcp";
+import { createSlackAgentStream } from "@/lib/bolt/task-stream";
 import { getThreadContextAsModelMessages } from "@/lib/bolt/thread-utils";
 import { buildToolLabelMap } from "@/lib/bolt/tool-labels";
-
-async function upsertTask(
-  tasksMap: Map<string, TaskUpdateChunk>,
-  streamer: { append: (args: { chunks: TaskUpdateChunk[] }) => Promise<unknown> },
-  id: string,
-  title: string,
-  status: TaskUpdateChunk["status"],
-): Promise<void> {
-  tasksMap.set(id, { type: "task_update", id, title, status });
-  await streamer.append({ chunks: [...tasksMap.values()] });
-}
+import { createToolLoopProjection } from "./projection";
 
 export const assistant = new Assistant({
   threadStarted: async ({
@@ -120,7 +110,6 @@ export const assistant = new Assistant({
       ]);
 
       const toolLabelMap = buildToolLabelMap(schema.tools);
-
       const agent = createSlackAgent(tools);
 
       streamer = client.chatStream({
@@ -136,43 +125,13 @@ export const assistant = new Assistant({
         experimental_transform: smoothStream({ chunking: "word" }),
       });
 
-      const tasksMap = new Map<TaskUpdateChunk["id"], TaskUpdateChunk>();
+      const agentStream = createSlackAgentStream(
+        streamer,
+        createToolLoopProjection(toolLabelMap),
+      );
 
-      for await (const part of result.fullStream) {
-        if (part.type === "tool-input-start") {
-          await upsertTask(
-            tasksMap,
-            streamer,
-            part.id,
-            toolLabelMap.get(part.toolName)?.inProgress ?? part.toolName,
-            "in_progress",
-          );
-        } else if (part.type === "tool-result") {
-          await upsertTask(
-            tasksMap,
-            streamer,
-            part.toolCallId,
-            toolLabelMap.get(part.toolName)?.complete ??
-              tasksMap.get(part.toolCallId)?.title ??
-              part.toolName,
-            "complete",
-          );
-        } else if (part.type === "tool-error") {
-          await upsertTask(
-            tasksMap,
-            streamer,
-            part.toolCallId,
-            tasksMap.get(part.toolCallId)?.title ?? part.toolName,
-            "error",
-          );
-        } else if (part.type === "text-delta") {
-          await streamer?.append({ markdown_text: part.text });
-        }
-      }
-
-      await streamer.stop({
-        chunks: [...tasksMap.values()],
-      });
+      await agentStream.consume(result.fullStream);
+      await agentStream.stop();
       streamerStopped = true;
     } catch (e) {
       logger.error(e);
@@ -181,7 +140,9 @@ export const assistant = new Assistant({
         text: `:warning: Sorry, something went wrong!`,
         metadata: {
           event_type: "assistant_error",
-          event_payload: { error: e instanceof Error ? e.message : "Unknown error" },
+          event_payload: {
+            error: e instanceof Error ? e.message : "Unknown error",
+          },
         },
       });
       if (!streamerStopped) {
