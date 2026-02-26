@@ -17,6 +17,9 @@ importers:
       '@ai-sdk/mcp':
         specifier: ^1.0.21
         version: 1.0.21(zod@4.3.6)
+      '@ai-sdk/openai':
+        specifier: ^3.0.34
+        version: 3.0.34(zod@4.3.6)
       '@slack/bolt':
         specifier: ^4.6.0
         version: 4.6.0(@types/express@5.0.6)
@@ -93,6 +96,12 @@ packages:
 
   '@ai-sdk/mcp@1.0.21':
     resolution: {integrity: sha512-dRX2X6GDadZNpiylNnw0HP7zJC8ggVOOJV/JtxuF6CgtP8CKnc7a/wEzpUw1m/4AGdD3mTDhKnKFwC4y10a8FQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+
+  '@ai-sdk/openai@3.0.34':
+    resolution: {integrity: sha512-rnSsjV7cqIUcYdHgTcXRvN+xn0+wv/DB/U1SCxCVOKDsD9xaNgDjQTuMeJ+dUTzpH4Gn+XS0dJQELCWVIFYQVg==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -1472,6 +1481,12 @@ snapshots:
       '@ai-sdk/provider': 3.0.8
       '@ai-sdk/provider-utils': 4.0.15(zod@4.3.6)
       pkce-challenge: 5.0.1
+      zod: 4.3.6
+
+  '@ai-sdk/openai@3.0.34(zod@4.3.6)':
+    dependencies:
+      '@ai-sdk/provider': 3.0.8
+      '@ai-sdk/provider-utils': 4.0.15(zod@4.3.6)
       zod: 4.3.6
 
   '@ai-sdk/provider-utils@4.0.15(zod@4.3.6)':
