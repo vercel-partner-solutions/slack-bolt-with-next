@@ -57,7 +57,7 @@ export const createSlackAgent = (tools: ToolSet) =>
     },
     tools: {
       ...tools,
-      web_search: openai.tools.webSearch({ needsApproval: true }),
+      web_search: openai.tools.webSearch(),
     },
     stopWhen: stepCountIs(10),
   });

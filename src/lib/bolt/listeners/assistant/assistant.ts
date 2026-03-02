@@ -1,7 +1,8 @@
+import type { MCPClient } from "@ai-sdk/mcp";
 import { Assistant } from "@slack/bolt";
-import { convertToModelMessages, smoothStream } from "ai";
+import { convertToModelMessages } from "ai";
 import { createSlackAgent } from "@/lib/ai/agent";
-import { createSlackMCPClient, type MCPClient } from "@/lib/bolt/mcp";
+import { createSlackMCPClient, fixSlackTools } from "@/lib/bolt/mcp";
 import { createSlackAgentStream } from "@/lib/bolt/task-stream";
 import { getThreadContextAsModelMessages } from "@/lib/bolt/thread-utils";
 import { buildToolLabelMap } from "@/lib/bolt/tool-labels";
@@ -90,6 +91,7 @@ export const assistant = new Assistant({
     let mcpClient: MCPClient | undefined;
     let streamer: ReturnType<typeof client.chatStream> | undefined;
     let streamerStopped = false;
+
     try {
       await setStatus("is thinking...");
       mcpClient = await createSlackMCPClient({
@@ -97,7 +99,7 @@ export const assistant = new Assistant({
       });
       await setTitle(message.text.slice(0, TITLE_MAX_LENGTH));
 
-      const [threadMessages, tools, schema] = await Promise.all([
+      const [threadResult, toolListResult] = await Promise.allSettled([
         getThreadContextAsModelMessages({
           client,
           channel,
@@ -105,11 +107,18 @@ export const assistant = new Assistant({
           oldest: thread_ts,
           botId,
         }),
-        mcpClient.tools(),
         mcpClient.listTools(),
       ]);
 
-      const toolLabelMap = buildToolLabelMap(schema.tools);
+      if (threadResult.status === "rejected") throw threadResult.reason;
+      if (toolListResult.status === "rejected") throw toolListResult.reason;
+
+      const threadMessages = threadResult.value;
+      const toolList = toolListResult.value;
+
+      const toolLabelMap = buildToolLabelMap(toolList.tools);
+      // Slack's MCP server allows empty strings for optional params (e.g. thread_ts: ""), but the Slack API rejects them.
+      const tools = fixSlackTools(mcpClient.toolsFromDefinitions(toolList));
       const agent = createSlackAgent(tools);
 
       streamer = client.chatStream({
@@ -122,7 +131,6 @@ export const assistant = new Assistant({
 
       const result = await agent.stream({
         messages: await convertToModelMessages(threadMessages),
-        experimental_transform: smoothStream({ chunking: "word" }),
       });
 
       const agentStream = createSlackAgentStream(
